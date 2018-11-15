@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 使用注解 -->
+    <context:annotation-config />
+    <!-- 自动扫描组件机制 -->
+    <context:component-scan base-package="com.oasystem" />
+    <!-- 启用mvc注解 -->
+    <mvc:annotation-driven />
+
+
+
+    <!-- 配置读取property文件的bean -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <value>classpath:application.properties</value>
+        </property>
+    </bean>
+
+
+    <!-- 声明dataSource数据源对象(连接池) -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+        <property name="driverClassName"><value>com.mysql.jdbc.Driver</value></property>
+        <property name="url"><value>jdbc:mysql://10.112.17.185:3306/OASystem</value></property>
+        <property name="username"><value>root</value></property>
+        <property name="password"><value>root</value></property>
+    </bean>
+
+
+    <!-- 声明sessionFactory对象 -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <!-- 注入数据源对象 -->
+        <property name="dataSource" ref="dataSource" />
+
+
+        <!-- 自动查找POJO对象并通过注解生成映射关系 -->
+        <property name="packagesToScan">
+            <list>
+                <value>com.oasystem.pojo</value>
+            </list>
+        </property>
+
+
+        <!-- Hibernate属性 -->
+        <property name="hibernateProperties">
+            <value>
+                hibernate.dialect=${hibernate_dialect}
+                hibernate.hbm2ddl.auto=${hbm2ddl.auto}
+                hibernate.show_sql=${show_sql}
+                hibernate.format_sql=${format_sql}
+                hibernate.cache.use_second_level_cache=${open_second_level}
+                hibernate.cache.use_query_cache=${open_query_cache}
+                hibernate.cache.provider_class=${eh_provider_class}
+            </value>
+        </property>
+
+    </bean>
+
+
+</beans>
